@@ -9,7 +9,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 #
 Faker::Config.locale = 'en'
-redis = Redis.new
+redis = Redis.new(url: "redis://localhost:6379/15")
 
 def range(min, max)
   rand * (max-min) + min
@@ -17,13 +17,13 @@ end
 
 # Generate 1000 users
 1000.times do
-  email = Faker::Internet.email
+  user_email = Faker::Internet.email
   u = User.create(
       name: Faker::Name.first_name,
       surname: Faker::Name.last_name,
       age: range(30,60).to_i,
-      username: email.split("@").first,
-      email: email
+      username: user_email.split("@").first,
+      email: user_email
   )
   # Generate coords near Moscow
   long = range 37.218423, 37.918423
