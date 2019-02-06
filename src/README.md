@@ -1,14 +1,12 @@
 ### Инструкция по запуску
 
 ```bash
-# нужно сбилдить docker container
-$ docker-compose build
-
 # нужно запустить docker
 $ docker-compose up -d
-```
 
-```bash
-# если нужно поменять порт рельсы
-# нужно отредактировать файл docker-compose.yml
+# нужно создать базы и сиды
+$ docker-compose exec web bundle exec rake db:drop
+$ docker-compose exec web bundle exec rake db:create
+$ docker-compose exec web bundle exec rake db:migrate
+$ docker-compose exec web bundle exec rake db:seed
 ```

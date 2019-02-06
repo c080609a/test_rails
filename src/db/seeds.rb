@@ -9,7 +9,7 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 #
 Faker::Config.locale = 'en'
-redis = Redis.new(url: "redis://localhost:6379/15")
+redis = Redis.new(url: "redis://redis:6379/15")
 
 def range(min, max)
   rand * (max-min) + min
