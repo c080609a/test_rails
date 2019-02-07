@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_02_06_092230) do
     t.integer "age"
     t.string "username", limit: 30
     t.string "email"
+    t.boolean "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

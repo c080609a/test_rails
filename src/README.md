@@ -10,3 +10,4 @@ $ docker-compose exec web bundle exec rake db:create
 $ docker-compose exec web bundle exec rake db:migrate
 $ docker-compose exec web bundle exec rake db:seed
 ```
+

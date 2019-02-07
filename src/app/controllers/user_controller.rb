@@ -5,6 +5,17 @@ class UserController < ApplicationController
   end
 
   def show
+    u = User.find(params[:id])
+    redis_conn = Redis.new(url: "redis://redis:6379/15")
+    geopos = redis_conn.geopos("test_rails", params[:id])
+    result = {
+      age: u.age,
+      geopos: {
+        latitude: geopos[0][0],
+        longitude: geopos[0][1]
+      }
+    }
+    render json: result
   end
 
   def get_by_geotarget
@@ -20,16 +31,11 @@ class UserController < ApplicationController
     result = Array.new
     arr_ids.each do |el|
       u = User.find(el)
-      geopos = redis_conn.geopos("test_rails", el)
       result.push(
-        id: el,
+        id: u.id,
         name: u.name,
-        email: u.email,
         surname: u.surname,
-        geopos: {
-          latitude: geopos[0][0],
-          longitude: geopos[0][1]
-        }
+        gender: u.gender ? "male" : "female"
       )
     end
 
