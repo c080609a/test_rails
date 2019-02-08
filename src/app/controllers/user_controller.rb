@@ -1,13 +1,11 @@
 # frozen_string_literal: true
 
 class UserController < ApplicationController
-  def index
-  end
+  before_action :conn_redis, only: [:show, :get_by_geotarget]
 
   def show
     u = User.find(params[:id])
-    redis_conn = Redis.new(url: "redis://redis:6379/15")
-    geopos = redis_conn.geopos("test_rails", params[:id])
+    geopos = @redis_conn.geopos("test_rails", params[:id])
     result = {
       age: u.age,
       geopos: {
@@ -19,26 +17,25 @@ class UserController < ApplicationController
   end
 
   def get_by_geotarget
-    redis_conn = Redis.new(url: "redis://redis:6379/15")
-    arr_ids = redis_conn.georadius(
-      "test_rails",
-      params[:lat],
-      params[:lo],
-      params[:rad],
-      params[:met]
+    arr_ids = @redis_conn.georadius(
+      ENV["GEOREDIS_KEY"],
+      geotarget_params[:lat],
+      geotarget_params[:lo],
+      geotarget_params[:rad],
+      geotarget_params[:met]
     )
 
-    result = Array.new
-    arr_ids.each do |el|
-      u = User.find(el)
-      result.push(
-        id: u.id,
-        name: u.name,
-        surname: u.surname,
-        gender: u.gender ? "male" : "female"
-      )
+    result = User.find(arr_ids).map{ |el| el.attributes.merge(id: el.id, name: el.name, surname: el.surname, gender: el.gender ? "Male" : "Female").slice(:id, :name, :surname, :gender)  }
+
+    render json: result.to_json
+  end
+
+  private
+    def conn_redis
+      @redis_conn = Redis.new(url: ENV["GEOREDIS"])
     end
 
-    render json: result
-  end
+    def geotarget_params
+      params.permit(:lat, :lo, :rad, :met)
+    end
 end

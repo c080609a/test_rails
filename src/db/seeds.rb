@@ -30,7 +30,7 @@ end
   # Generate coords near Moscow
   long = range 37.218423, 37.918423
   lat = range 55.351244, 55.9
-  redis_conn.geoadd("test_rails",lat, long, u.id)
+  redis_conn.geoadd(ENV["GEOREDIS_KEY"],lat, long, u.id)
 end
 
 
