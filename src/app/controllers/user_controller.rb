@@ -4,30 +4,16 @@ class UserController < ApplicationController
   before_action :conn_redis, only: [:show, :get_by_geotarget]
 
   def show
-    u = User.find(params[:id])
-    geopos = @redis_conn.geopos("test_rails", params[:id])
-    result = {
-      age: u.age,
-      geopos: {
-        latitude: geopos[0][0],
-        longitude: geopos[0][1]
-      }
-    }
-    render json: result
+    sp = show_params
+    geopos = @redis_conn.geopos(ENV["GEOREDIS_KEY"], sp[:id])
+
+    render json: User.get_show(sp[:id], geopos)
   end
 
   def get_by_geotarget
-    arr_ids = @redis_conn.georadius(
-      ENV["GEOREDIS_KEY"],
-      geotarget_params[:lat],
-      geotarget_params[:lo],
-      geotarget_params[:rad],
-      geotarget_params[:met]
-    )
-
-    result = User.find(arr_ids).map{ |el| el.attributes.merge(id: el.id, name: el.name, surname: el.surname, gender: el.gender ? "Male" : "Female").slice(:id, :name, :surname, :gender)  }
-
-    render json: result.to_json
+    gt = geotarget_params
+    arr_ids = @redis_conn.georadius(ENV["GEOREDIS_KEY"], gt[:lat], gt[:lo], gt[:rad], gt[:met])
+    render json: User.get_by_geotarget(arr_ids)
   end
 
   private
@@ -37,5 +23,9 @@ class UserController < ApplicationController
 
     def geotarget_params
       params.permit(:lat, :lo, :rad, :met)
+    end
+
+    def show_params
+      params.permit(:id)
     end
 end
