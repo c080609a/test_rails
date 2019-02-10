@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Rails src: development" uuid="44a6f208-e195-4b4d-ac07-0652541c9bc1">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
+    </data-source>
+    <data-source name="Rails src: test" uuid="91c3421b-df4e-4627-a460-ec2618bb0bb0">
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" dbms="SQLITE" exact-version="0" />
+    </data-source>
+  </component>
+</project>
